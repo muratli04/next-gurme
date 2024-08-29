@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { UserIcon, UserGroupIcon} from '@heroicons/react/24/solid';
+import { UserIcon, UserGroupIcon } from '@heroicons/react/24/solid';
 import React, { useState } from 'react';
 
 export default function AddMeal() {
@@ -8,28 +8,22 @@ export default function AddMeal() {
     description: '',
     restaurant: '',
     image: null,
-    rating: 0, // Yeni: Puan değeri
+    rating: 0,
   });
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    setMeal({ ...meal, image: URL.createObjectURL(file) }); // Görseli URL olarak sakla
+    setMeal({ ...meal, image: URL.createObjectURL(file) });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Local storage'da var olan meal listesini al
     const storedMeals = JSON.parse(localStorage.getItem('meals')) || [];
-
-    // Yeni yemeği mevcut listeye ekle
     const updatedMeals = [...storedMeals, meal];
-
-    // Yeni meal listesini local storage'a kaydet
     localStorage.setItem('meals', JSON.stringify(updatedMeals));
 
     alert('Yemek başarıyla eklendi!');
-    setMeal({ name: '', description: '', restaurant: '', image: null, rating: 0 }); // Formu temizle
+    setMeal({ name: '', description: '', restaurant: '', image: null, rating: 0 });
   };
 
   return (
@@ -51,7 +45,16 @@ export default function AddMeal() {
             <li>
               <Link href="/admin/comments/index" className="hover:text-gray-300">Yorumlar</Link>
             </li>
-          </ul>
+            <li>
+              <Link href="/admin/video" className="hover:text-gray-300">Videolarım </Link>
+            </li>
+            <li>
+              <Link href="/admin/edit" className="hover:text-gray-300">
+                Edit
+              </Link>
+
+            </li>
+           </ul>
         </nav>
       </aside>
 
@@ -61,17 +64,17 @@ export default function AddMeal() {
           <div className="max-w-7xl mx-auto flex justify-between items-center">
             <h1 className="text-3xl font-bold"></h1>
             <ul className="flex space-x-6">
-                <li>
-                  <Link href="/admin" className="hover:underline flex items-center">
-                    <UserIcon className="h-6 w-6 text-black" />
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/admin/settings" className="hover:underline flex items-center">
-                    <UserGroupIcon className="h-6 w-6 text-white" />
-                  </Link>
-                </li>
-              </ul>
+              <li>
+                <Link href="/admin" className="hover:underline flex items-center">
+                  <UserIcon className="h-6 w-6 text-black" />
+                </Link>
+              </li>
+              <li>
+                <Link href="/admin/home" className="hover:underline flex items-center">
+                  <UserGroupIcon className="h-6 w-6 text-white" />
+                </Link>
+              </li>
+            </ul>
           </div>
         </header>
 
@@ -79,11 +82,9 @@ export default function AddMeal() {
         <main className="p-8 bg-gray-100 min-h-screen">
           <h2 className="text-2xl font-semibold mb-6">Yeni Yemek Ekle</h2>
 
-          {/* Yemek Ekleme Formu */}
           <form onSubmit={handleSubmit} className="max-w-lg mx-auto p-6 bg-white border border-gray-300 shadow-lg rounded-lg">
             <h1 className="text-3xl mb-6 font-semibold text-center text-gray-800">Yemek Ekle</h1>
 
-            {/* Yemek Adı */}
             <div className="mb-4">
               <label htmlFor="mealName" className="block text-sm font-medium text-gray-700">Yemek Adı</label>
               <input
@@ -96,7 +97,6 @@ export default function AddMeal() {
               />
             </div>
 
-            {/* Yemek Açıklaması */}
             <div className="mb-4">
               <label htmlFor="mealDescription" className="block text-sm font-medium text-gray-700">Yemek Açıklaması</label>
               <textarea
@@ -108,7 +108,6 @@ export default function AddMeal() {
               />
             </div>
 
-            {/* Restoran Adı */}
             <div className="mb-4">
               <label htmlFor="restaurantName" className="block text-sm font-medium text-gray-700">Restoran Adı</label>
               <input
@@ -121,7 +120,6 @@ export default function AddMeal() {
               />
             </div>
 
-            {/* Yemek Görseli */}
             <div className="mb-4">
               <label htmlFor="mealImage" className="block text-sm font-medium text-gray-700">Yemek Görseli</label>
               <input
@@ -132,7 +130,6 @@ export default function AddMeal() {
               />
             </div>
 
-            {/* Yemek Puanı */}
             <div className="mb-4">
               <label htmlFor="mealRating" className="block text-sm font-medium text-gray-700">Yemek Puanı</label>
               <select
@@ -150,7 +147,6 @@ export default function AddMeal() {
               </select>
             </div>
 
-            {/* Submit Butonu */}
             <button type="submit" className="w-full bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition-all">
               Yemek Ekle
             </button>

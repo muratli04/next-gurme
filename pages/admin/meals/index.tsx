@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { UserIcon ,UserGroupIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
@@ -49,6 +50,16 @@ export default function AdminPanel() {
               <Link href="/admin/comments/index" className="hover:text-gray-300">
                 Yorumlar
               </Link>
+
+            </li>
+            <li>
+              <Link href="/admin/video" className="hover:text-gray-300">Videolarım </Link>
+             </li>
+             <li>
+              <Link href="/admin/edit" className="hover:text-gray-300">
+                Edit
+              </Link>
+
             </li>
           </ul>
         </nav>
@@ -68,7 +79,7 @@ export default function AdminPanel() {
                   </Link> 
                 </li>
                 <li>
-                <Link href="/admin/settings" className="hover:underline flex items-center">
+                <Link href="/admin/home" className="hover:underline flex items-center">
                     <UserGroupIcon className="h-6 w-6 text-white" />
                   </Link>
                 </li>

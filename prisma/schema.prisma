@@ -1,0 +1,14 @@
+model Yorum {
+  id        Int      @id @default(autoincrement())
+  yemekId   Int
+  yorum     String
+  onayli    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Yemek {
+  id        Int      @id @default(autoincrement())
+  ad        String
+  aciklama  String
+  createdAt DateTime @default(now())
+}
