@@ -1,10 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { UserIcon, UserGroupIcon } from '@heroicons/react/24/solid';
+import {
+  UserIcon,
+  UserGroupIcon,
+  HomeIcon,
+  PlusCircleIcon,
+  DocumentTextIcon,
+  VideoCameraIcon,
+  PencilSquareIcon,
+  EnvelopeIcon,
+  QuestionMarkCircleIcon,
+  GlobeAltIcon,
+} from '@heroicons/react/24/solid';
+import { FaHamburger,FaCaravan } from 'react-icons/fa';
+import { FaPencil } from "react-icons/fa6";
 
 export default function AddRestaurant() {
-  const [restaurant, setRestaurant] = useState({ name: '', city: '', image: '', rating: 0 });
-  const [restaurants, setRestaurants] = useState<{ name: string; city: string; image: string; rating: number }[]>([]);
+  const [restaurant, setRestaurant] = useState({
+    name: '',
+    city: '',
+    category: '',
+    image: '',
+    rating: 0,
+  });
+  const [restaurants, setRestaurants] = useState([]);
 
   useEffect(() => {
     // Mevcut restoranları localStorage'dan al
@@ -12,14 +31,13 @@ export default function AddRestaurant() {
     setRestaurants(storedRestaurants);
   }, []);
 
-  const handleSubmit = async (e: { preventDefault: () => void; }) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Resmi base64 formatına çevir
     const reader = new FileReader();
     reader.readAsDataURL(restaurant.image);
     reader.onloadend = () => {
-      // Eğer resim boyutu çok büyükse burada uyarı verilebilir.
       const newRestaurant = { ...restaurant, image: reader.result as string };
       const updatedRestaurants = [...restaurants, newRestaurant];
 
@@ -29,7 +47,7 @@ export default function AddRestaurant() {
         setRestaurants(updatedRestaurants);
 
         alert('Restoran eklendi!');
-        setRestaurant({ name: '', city: '', image: '', rating: 0 });
+        setRestaurant({ name: '', city: '', category: '', image: '', rating: 0 });
       } catch (error) {
         console.error('Veri kaydedilirken hata oluştu:', error);
         alert('Restoran eklenirken bir hata oluştu. Lütfen tekrar deneyin.');
@@ -41,13 +59,13 @@ export default function AddRestaurant() {
     };
   };
 
-  const handleDelete = (index: number) => {
+  const handleDelete = (index) => {
     const updatedRestaurants = restaurants.filter((_, i) => i !== index);
     setRestaurants(updatedRestaurants);
     localStorage.setItem('restaurants', JSON.stringify(updatedRestaurants));
   };
 
-  const renderStars = (rating: number) => {
+  const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, i) => (
       <span key={i} className={i < rating ? 'text-yellow-500' : 'text-gray-300'}>★</span>
     ));
@@ -55,31 +73,73 @@ export default function AddRestaurant() {
 
   return (
     <div className="min-h-screen flex">
-      {/* Sidebar */}
-      <aside className="w-64 bg-gray-800 text-white flex flex-col">
-        <h2 className="text-2xl font-bold p-4 border-b border-gray-700">Restoranlar</h2>
+ <aside className="w-64 bg-gray-800 text-white flex flex-col">
+        <h2 className="text-2xl font-bold p-4 border-b border-gray-700">Admin Paneli</h2>
         <nav className="flex-grow">
           <ul className="p-4 space-y-4">
-            <li>
-              <Link href="/admin/meals" className="hover:text-gray-300">Yemekler</Link>
+            <li className="group flex items-center space-x-4 hover:bg-gray-700 p-2 rounded transition-all duration-200 ease-in-out">
+              <HomeIcon className="h-6 w-6 text-white group-hover:text-gray-300" />
+              <Link href="/admin/home" className="group-hover:text-gray-300">
+                Ana Sayfa
+              </Link>
             </li>
-            <li>
-              <Link href="/admin/meals/add" className="hover:text-gray-300">Yemek Ekle</Link>
+            <li className="group flex items-center space-x-4 hover:bg-gray-700 p-2 rounded transition-all duration-200 ease-in-out">
+              <FaHamburger className="h-6 w-6 text-white group-hover:text-gray-300" />
+              <Link href="/admin/meals" className="group-hover:text-gray-300">
+                Yemekler
+              </Link>
             </li>
-            <li>
-              <Link href="/admin/restaurants/add" className="hover:text-gray-300">Restoran Ekle</Link>
+            <li className="group flex items-center space-x-4 hover:bg-gray-700 p-2 rounded transition-all duration-200 ease-in-out">
+              <PlusCircleIcon className="h-6 w-6 text-white group-hover:text-gray-300" />
+              <Link href="/admin/meals/add" className="group-hover:text-gray-300">
+                Yemek Ekle
+              </Link>
             </li>
-            <li>
-              <Link href="/admin/comments/index" className="hover:text-gray-300">Yorumlar</Link>
+            <li className="group flex items-center space-x-4 hover:bg-gray-700 p-2 rounded transition-all duration-200 ease-in-out">
+              <PlusCircleIcon className="h-6 w-6 text-white group-hover:text-gray-300" />
+              <Link href="/admin/restaurants/add" className="group-hover:text-gray-300">
+                Restoran Ekle
+              </Link>
             </li>
-            <li>
-              <Link href="/admin/video" className="hover:text-gray-300">Videolarım</Link>
+            <li className="group flex items-center space-x-4 hover:bg-gray-700 p-2 rounded transition-all duration-200 ease-in-out">
+              <DocumentTextIcon className="h-6 w-6 text-white group-hover:text-gray-300" />
+              <Link href="/admin/comments/index" className="group-hover:text-gray-300">
+                Yorumlar
+              </Link>
             </li>
-            <li>
-              <Link href="/admin/edit" className="hover:text-gray-300">
+            <li className="group flex items-center space-x-4 hover:bg-gray-700 p-2 rounded transition-all duration-200 ease-in-out">
+              <VideoCameraIcon className="h-6 w-6 text-white group-hover:text-gray-300" />
+              <Link href="/admin/video" className="group-hover:text-gray-300">Videolarım</Link>
+            </li>
+            <li className="group flex items-center space-x-4 hover:bg-gray-700 p-2 rounded transition-all duration-200 ease-in-out">
+              <PencilSquareIcon className="h-6 w-6 text-white group-hover:text-gray-300" />
+              <Link href="/admin/edit" className="group-hover:text-gray-300">
                 Edit
               </Link>
-
+            </li>
+            <li className="group flex items-center space-x-4 hover:bg-gray-700 p-2 rounded transition-all duration-200 ease-in-out">
+              <QuestionMarkCircleIcon className="h-6 w-6 text-white group-hover:text-gray-300" />
+              <Link href="/admin/question" className="group-hover:text-gray-300">
+                Sorular
+              </Link>
+            </li>
+            <li className="group flex items-center space-x-4 hover:bg-gray-700 p-2 rounded transition-all duration-200 ease-in-out">
+              <EnvelopeIcon className="h-6 w-6 text-white group-hover:text-gray-300" />
+              <Link href="/admin/messages" className="group-hover:text-gray-300">
+                Mesajlar
+              </Link>
+            </li>
+            <li className="group flex items-center space-x-4 hover:bg-gray-700 p-2 rounded transition-all duration-200 ease-in-out">
+              <GlobeAltIcon className="h-6 w-6 text-white group-hover:text-gray-300" />
+              <Link href="/admin/social" className="group-hover:text-gray-300">Sosyal Medya</Link>
+            </li>
+            <li className="group flex items-center space-x-4 hover:bg-gray-700 p-2 rounded transition-all duration-200 ease-in-out">
+              <FaCaravan className="h-6 w-6 text-white group-hover:text-gray-300" />
+              <Link href="/admin/geziler" className="group-hover:text-gray-300">Geziler</Link>
+            </li>
+            <li className="group flex items-center space-x-4 hover:bg-gray-700 p-2 rounded transition-all duration-200 ease-in-out">
+              <FaPencil className="h-6 w-6 text-white group-hover:text-gray-300" />
+              <Link href="/admin/yazi" className="group-hover:text-gray-300">Yazılar</Link>
             </li>
           </ul>
         </nav>
@@ -90,21 +150,7 @@ export default function AddRestaurant() {
         {/* Navbar */}
         <header className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white p-5 shadow-lg">
           <div className="max-w-7xl mx-auto flex justify-between items-center">
-            <h1 className="text-4xl font-bold"></h1>
-            <nav>
-              <ul className="flex space-x-6">
-                <li>
-                  <Link href="/admin" className="hover:underline flex items-center">
-                    <UserIcon className="h-6 w-6 text-black" />
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/admin/home" className="hover:underline flex items-center">
-                    <UserGroupIcon className="h-6 w-6 text-white" />
-                  </Link>
-                </li>
-              </ul>
-            </nav>
+            <h1 className="text-4xl font-bold">Restoran Ekle</h1>
           </div>
         </header>
 
@@ -138,6 +184,19 @@ export default function AddRestaurant() {
                 placeholder="Şehir"
                 value={restaurant.city}
                 onChange={(e) => setRestaurant({ ...restaurant, city: e.target.value })}
+                className="w-full mt-1 p-2 border border-gray-300 rounded bg-white text-black focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              />
+            </div>
+
+            {/* Kategori */}
+            <div className="mb-4">
+              <label htmlFor="category" className="block text-sm font-medium text-gray-700">Kategori</label>
+              <input
+                id="category"
+                type="text"
+                placeholder="Kategori"
+                value={restaurant.category}
+                onChange={(e) => setRestaurant({ ...restaurant, category: e.target.value })}
                 className="w-full mt-1 p-2 border border-gray-300 rounded bg-white text-black focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               />
             </div>
@@ -187,6 +246,7 @@ export default function AddRestaurant() {
                     <img src={restaurant.image} alt={restaurant.name} className="w-full h-32 object-cover rounded mb-2" />
                     <h4 className="text-lg font-semibold text-indigo-600">{restaurant.name}</h4>
                     <p className="text-gray-700">{restaurant.city}</p>
+                    <p className="text-gray-700">{restaurant.category}</p>
                     <div className="mt-2 mb-4">{renderStars(restaurant.rating)}</div>
                     <button
                       onClick={() => handleDelete(index)}

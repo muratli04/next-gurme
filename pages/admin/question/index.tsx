@@ -1,75 +1,57 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { UserIcon, UserGroupIcon } from '@heroicons/react/24/solid';
 import {
+  UserIcon,
   HomeIcon,
   PlusCircleIcon,
   DocumentTextIcon,
   VideoCameraIcon,
   PencilSquareIcon,
-  EnvelopeIcon, 
-  QuestionMarkCircleIcon,  
-  GlobeAltIcon,  
+  EnvelopeIcon,
+  QuestionMarkCircleIcon,
+  GlobeAltIcon,
 } from '@heroicons/react/24/solid';
-import { FaHamburger,FaCaravan } from "react-icons/fa";
+import { FaHamburger,FaCaravan } from 'react-icons/fa';
 import { FaPencil } from "react-icons/fa6";
 
-
-// convertToEmbedURL fonksiyonunu tanımlayın
-const convertToEmbedURL = (url: string) => {
-  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-  const match = url.match(regExp);
-
-  if (match && match[2].length === 11) {
-    return `https://www.youtube.com/embed/${match[2]}`;
-  } else {
-    return '';
-  }
-};
-
-const VideoPage: React.FC = () => {
-  const [videoLinks, setVideoLinks] = useState<{ link: string, description: string }[]>([]);
-  const [newVideoLink, setNewVideoLink] = useState<string>('');
-  const [newVideoDescription, setNewVideoDescription] = useState<string>('');
+export default function AdminFaq() {
+  const [faqData, setFaqData] = useState<{ question: string; answer: string; active: boolean }[]>([]);
 
   useEffect(() => {
-    try {
-      const storedVideos = JSON.parse(localStorage.getItem('videoLinks') || '[]');
-      setVideoLinks(storedVideos);
-    } catch (error) {
-      console.error('LocalStorage getItem hatası:', error);
-    }
+    const storedFaqData = JSON.parse(localStorage.getItem('faqData') || '[]');
+    setFaqData(storedFaqData);
   }, []);
 
-  const handleAddVideo = () => {
-    if (newVideoLink.trim() !== '' && newVideoDescription.trim() !== '') {
-      const embedLink = convertToEmbedURL(newVideoLink);
-      const updatedVideos = [...videoLinks, { link: embedLink, description: newVideoDescription }];
-      setVideoLinks(updatedVideos);
-      try {
-        localStorage.setItem('videoLinks', JSON.stringify(updatedVideos));
-      } catch (error) {
-        console.error('LocalStorage setItem hatası:', error);
-      }
-      setNewVideoLink('');
-      setNewVideoDescription('');
-    }
+  const handleInputChange = (index: number, field: 'question' | 'answer', value: string) => {
+    const updatedFaqData = [...faqData];
+    updatedFaqData[index][field] = value;
+    setFaqData(updatedFaqData);
   };
 
-  const handleDeleteVideo = (index: number) => {
-    const updatedVideos = videoLinks.filter((_, i) => i !== index);
-    setVideoLinks(updatedVideos);
-    try {
-      localStorage.setItem('videoLinks', JSON.stringify(updatedVideos));
-    } catch (error) {
-      console.error('LocalStorage setItem hatası:', error);
-    }
+  const handleToggleActive = (index: number) => {
+    const updatedFaqData = [...faqData];
+    updatedFaqData[index].active = !updatedFaqData[index].active;
+    setFaqData(updatedFaqData);
+  };
+
+  const addFaq = () => {
+    setFaqData([...faqData, { question: '', answer: '', active: true }]);
+  };
+
+  const removeFaq = (index: number) => {
+    const updatedFaqData = faqData.filter((_, i) => i !== index);
+    setFaqData(updatedFaqData);
+  };
+
+  const handleSave = () => {
+    localStorage.setItem('faqData', JSON.stringify(faqData));
+    alert('Sorular ve Cevaplar başarıyla güncellendi!');
   };
 
   return (
     <div className="min-h-screen flex">
- {/* Sidebar */}
- <aside className="w-64 bg-gray-800 text-white flex flex-col">
+      {/* Sidebar */}
+      <aside className="w-64 bg-gray-800 text-white flex flex-col">
         <h2 className="text-2xl font-bold p-4 border-b border-gray-700">Admin Paneli</h2>
         <nav className="flex-grow">
           <ul className="p-4 space-y-4">
@@ -141,23 +123,17 @@ const VideoPage: React.FC = () => {
         </nav>
       </aside>
 
-
-      {/* Main content */}
+      {/* Main Content */}
       <div className="flex-grow">
         {/* Navbar */}
         <header className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white p-5 shadow-lg">
           <div className="max-w-7xl mx-auto flex justify-between items-center">
-            <h1 className="text-4xl font-bold">Video Yönetimi</h1>
+            <h1 className="text-3xl font-bold">Sıkça Sorulan Sorular</h1>
             <nav>
               <ul className="flex space-x-6">
                 <li>
-                  <Link href="/admin" className="hover:underline flex items-center">
-                    <UserIcon className="h-6 w-6 text-black" />
-                  </Link>
-                </li>
-                <li>
                   <Link href="/admin/home" className="hover:underline flex items-center">
-                    <UserGroupIcon className="h-6 w-6 text-white" />
+                    <UserIcon className="h-6 w-6 text-white rounded-lg" />
                   </Link>
                 </li>
               </ul>
@@ -165,60 +141,65 @@ const VideoPage: React.FC = () => {
           </div>
         </header>
 
-        {/* Content */}
+        {/* FAQ Content */}
         <main className="p-8 bg-gray-100 min-h-screen">
-          <h2 className="text-2xl font-semibold mb-6">Video Ekle</h2>
+          <div className="bg-white p-6 shadow-md rounded-lg">
+            <h2 className="text-2xl font-semibold mb-4">Soruları ve Cevapları Yönet</h2>
 
-          {/* Video Ekleme Formu */}
-          <div className="mb-6">
-            <input
-              type="text"
-              placeholder="YouTube Video Linki Ekle"
-              value={newVideoLink}
-              onChange={(e) => setNewVideoLink(e.target.value)}
-              className="p-2 border border-gray-300 rounded mb-2 w-full bg-white text-black"
-            />
-            <input
-              type="text"
-              placeholder="Video Açıklaması Ekle"
-              value={newVideoDescription}
-              onChange={(e) => setNewVideoDescription(e.target.value)}
-              className="p-2 border border-gray-300 rounded mb-2 w-full bg-white text-black"
-            />
-            <button
-              onClick={handleAddVideo}
-              className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition-all"
-            >
-              Video Ekle
-            </button>
-          </div>
-
-          {/* Eklenen Videoların Listesi */}
-          <div className="flex flex-wrap gap-4">
-            {videoLinks.map((video, index) => (
-              <div key={index} className="bg-white p-4 rounded shadow-md w-80">
-                <iframe
-                  width="100%"
-                  height="180"
-                  src={convertToEmbedURL(video.link)}
-                  title={`Video ${index + 1}`}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-                <p className="text-black mt-2">{video.description}</p>
-                <button
-                  onClick={() => handleDeleteVideo(index)}
-                  className="bg-red-500 text-white py-1 px-2 rounded hover:bg-red-600 transition-all mt-2"
-                >
-                  Sil
-                </button>
+            {faqData.map((faq, index) => (
+              <div key={index} className="mb-4">
+                <label htmlFor={`question-${index}`} className="block text-sm font-medium text-gray-700">
+                  Soru {index + 1}
+                </label>
+                <input
+                  id={`question-${index}`}
+                  type="text"
+                  value={faq.question}
+                  onChange={(e) => handleInputChange(index, 'question', e.target.value)}
+                  className="w-full mt-1 p-2 border border-gray-300 rounded bg-white text-black focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                />
+                <label htmlFor={`answer-${index}`} className="block text-sm font-medium text-gray-700 mt-2">
+                  Cevap {index + 1}
+                </label>
+                <textarea
+                  id={`answer-${index}`}
+                  value={faq.answer}
+                  onChange={(e) => handleInputChange(index, 'answer', e.target.value)}
+                  className="w-full mt-1 p-2 border border-gray-300 rounded bg-white text-black focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                />
+                <div className="flex items-center justify-between mt-2">
+                  <button
+                    onClick={() => removeFaq(index)}
+                    className="text-red-500"
+                  >
+                    Kaldır
+                  </button>
+                  <button
+                    onClick={() => handleToggleActive(index)}
+                    className={`py-1 px-3 rounded ${faq.active ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700'}`}
+                  >
+                    {faq.active ? 'Aktif' : 'Pasif'}
+                  </button>
+                </div>
               </div>
             ))}
+
+            <button
+              onClick={addFaq}
+              className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-all mb-4"
+            >
+              Soru ve Cevap Ekle
+            </button>
+
+            <button
+              onClick={handleSave}
+              className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition-all"
+            >
+              Kaydet
+            </button>
           </div>
         </main>
       </div>
     </div>
   );
-};
-
-export default VideoPage;
+}
